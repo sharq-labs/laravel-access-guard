@@ -1,6 +1,6 @@
 <?php
 
-namespace Sharqlabs\LaravelAccessGuard\Console\Commands;
+namespace Sharqlabs\LaravelAccessGuard\Commands;
 
 use Illuminate\Console\Command;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
