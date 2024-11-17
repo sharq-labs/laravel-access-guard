@@ -55,24 +55,24 @@ class AccessVerificationController
     {
         $validated = $request->validate([
             'otp' => 'required|numeric',
-            'session_token' => 'required|string',
+            'sessionToken' => 'required|string',
         ]);
 
-        $sessionToken = $validated['session_token'];
+        $sessionToken = $validated['sessionToken'];
         $clientIp = $request->ip();
 
         $browserSession = UserAccessBrowser::where('session_token', $sessionToken)
             ->where('session_ip', $clientIp)
             ->first();
 
-        if (!$browserSession || !$this->isOtpValid($browserSession, $validated['otp'])) {
+        if (!$browserSession || $browserSession->otp != $validated['otp']) {
             return back()->withErrors(['otp' => 'Invalid or expired OTP.']);
         }
 
         $this->markSessionAsVerified($browserSession);
 
         $tokenExpiry = config('access-guard.session_token_expiry', 60 * 24 * 7); // Default to 7 days
-        $cookie = cookie('session_token', $browserSession->session_token, $tokenExpiry, '/', null, true, true); // Secure, HTTP-only
+        $cookie = cookie( 'session_token', $browserSession->session_token, $tokenExpiry, '/', null, app()->environment('production'), true );
 
         return redirect()->intended('/')->withCookie($cookie);
     }
@@ -114,7 +114,7 @@ class AccessVerificationController
         $otp = rand(100000, 999999);
 
         $browserSession->update([
-            'otp' => bcrypt($otp),
+            'otp' => $otp,
         ]);
 
         $record->notify(new OTPNotification($otp));
@@ -129,11 +129,4 @@ class AccessVerificationController
         $browserSession->userAccessRecord->update(['last_verified_at' => now()]);
     }
 
-    /**
-     * Check if the OTP is valid.
-     */
-    protected function isOtpValid(UserAccessBrowser $browserSession, string $otp): bool
-    {
-        return password_verify($otp, $browserSession->otp) && !$browserSession->isExpired();
-    }
 }

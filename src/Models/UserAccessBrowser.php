@@ -6,7 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserAccessBrowser extends Model
 {
-    protected $fillable = ['user_access_record_id', 'session_ip', 'browser', 'otp', 'expires_at', 'verified_at'];
+    protected $fillable = [
+        'user_access_record_id',
+        'session_token',
+        'session_ip',
+        'browser',
+        'otp',
+        'expires_at',
+        'verified_at'
+    ];
+
+    /**
+     * The attributes that should be cast to specific types.
+     */
+    protected $casts = [
+        'user_access_record_id' => 'integer',
+        'expires_at' => 'datetime',
+        'verified_at' => 'datetime',
+        'otp' => 'integer', // Assuming OTP is an integer
+    ];
 
     /**
      * Define the relationship with the user record.
