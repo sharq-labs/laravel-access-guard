@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Sharqlabs\LaravelAccessGuard\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LaravelAccessGuardCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'laravel-access-guard';
 
     public $description = 'My command';
 
