@@ -3,6 +3,8 @@
 namespace Sharqlabs\LaravelAccessGuard;
 
 use Sharqlabs\LaravelAccessGuard\Commands\AddAccessRecordCommand;
+use Sharqlabs\LaravelAccessGuard\Commands\RemoveWhitelistedIpCommand;
+use Sharqlabs\LaravelAccessGuard\Commands\ShowWhitelistedIpsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Sharqlabs\LaravelAccessGuard\Commands\LaravelAccessGuardCommand;
@@ -45,6 +47,8 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
         if ($this->app->runningInConsole()) {
             $this->commands([
                 AddAccessRecordCommand::class,
+                ShowWhitelistedIpsCommand::class,
+                RemoveWhitelistedIpCommand::class,
             ]);
         }
     }
