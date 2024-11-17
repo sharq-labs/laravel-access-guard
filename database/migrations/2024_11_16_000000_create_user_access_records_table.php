@@ -21,7 +21,6 @@ class CreateAccessGuardEmailsTable extends Migration
             $table->timestamp('last_verified_at')->nullable(); // Last verification timestamp
             $table->timestamps();
         });
-
     }
 
     /**
@@ -31,6 +30,6 @@ class CreateAccessGuardEmailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('access_guard_emails'); // Drop the table
+        Schema::dropIfExists('user_access_records'); // Correct table name
     }
 }
