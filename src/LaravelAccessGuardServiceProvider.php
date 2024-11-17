@@ -2,6 +2,7 @@
 
 namespace Sharqlabs\LaravelAccessGuard;
 
+use Sharqlabs\LaravelAccessGuard\Console\Commands\AddAccessRecordCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Sharqlabs\LaravelAccessGuard\Commands\LaravelAccessGuardCommand;
