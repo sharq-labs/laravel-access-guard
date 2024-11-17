@@ -20,7 +20,7 @@ class VerifyAccess
         }
 
         // Check access by email and browser session
-        if ($userEmail && $this->validateSessionToken($sessionToken, $clientIp, $request)) {
+        if ($this->validateSessionToken($sessionToken, $clientIp, $request)) {
             return $next($request);
         }
 

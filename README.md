@@ -24,10 +24,9 @@ composer require sharq-labs/laravel-access-guard
 ````
 
 
-Publish and run the migrations:
+run the migrations:
 
 ```php
-php artisan vendor:publish --tag="laravel-access-guard-migrations"
 php artisan migrate
 ````
 
