@@ -3,9 +3,12 @@
 namespace Sharqlabs\LaravelAccessGuard\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class UserAccessRecord extends Model
 {
+    use Notifiable;
+
     protected $fillable = ['email', 'primary_ip', 'no_expiration', 'last_verified_at'];
 
     /**
