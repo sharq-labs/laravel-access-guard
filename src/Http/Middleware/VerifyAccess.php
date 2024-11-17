@@ -15,7 +15,7 @@ class VerifyAccess
         $sessionToken = $request->cookie('session_token'); // Retrieve token from cookie
 
         // Check access by IP only
-        if ($this->hasAccessByIp($clientIp)) {
+        if ($this->isIpWhitelisted($clientIp)) {
             return $next($request);
         }
 
@@ -53,10 +53,12 @@ class VerifyAccess
     /**
      * Check access by primary IP only.
      */
-    protected function hasAccessByIp(string $clientIp): bool
+    public function isIpWhitelisted(string $clientIp): bool
     {
-        $record = UserAccessRecord::query()->where('primary_ip', $clientIp)->first();
-
-        return $record && $record->is_whitelisted;
+        return UserAccessRecord::query()
+            ->where('is_whitelisted', true)
+            ->where('primary_ip', $clientIp)
+            ->exists();
     }
+
 }

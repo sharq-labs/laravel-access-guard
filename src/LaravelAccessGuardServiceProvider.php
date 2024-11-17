@@ -18,8 +18,7 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
             ->name('laravel-access-guard')
             ->hasConfigFile('access-guard') // Specify the config file name
             ->hasViews()
-            ->hasMigration('create_laravel_access_guard_table') // Add migration support
-            ->hasCommand(LaravelAccessGuardCommand::class);
+            ->hasMigration('create_laravel_access_guard_table');
     }
 
     /**

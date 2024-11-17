@@ -61,7 +61,17 @@ Add Email:
 Add IP to Whitelist:
 
 ```php
-php artisan access-guard:add-record --ip="192.168.1.1" --whitelist
+php artisan access-guard:add-record --ip="192.168.1.1" --is-whitelisted
+```
+
+Show Whitelisted IPs
+
+```php
+php artisan access-guard:show-whitelisted-ips
+```
+Remove Whitelisted IP
+```php
+php artisan access-guard:remove-whitelisted --ip="192.168.1.1"
 ```
 
 
