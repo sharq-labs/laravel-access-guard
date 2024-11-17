@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserAccessBrowser extends Model
 {
+
     protected $fillable = [
         'user_access_record_id',
         'session_token',
@@ -13,6 +14,7 @@ class UserAccessBrowser extends Model
         'browser',
         'otp',
         'expires_at',
+        'otp_expires_at',
         'verified_at'
     ];
 
@@ -24,7 +26,9 @@ class UserAccessBrowser extends Model
         'expires_at' => 'datetime',
         'verified_at' => 'datetime',
         'otp' => 'integer', // Assuming OTP is an integer
+        'otp_expires_at' => 'datetime',
     ];
+
 
     /**
      * Define the relationship with the user record.
@@ -48,7 +52,7 @@ class UserAccessBrowser extends Model
     public function isExpired(): bool
     {
         // Check if the parent user record does not expire
-        if ($this->userAccessRecord->no_expiration) {
+        if ($this->userAccessRecord->is_whitelisted) {
             return false;
         }
 

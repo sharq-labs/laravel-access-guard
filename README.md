@@ -47,8 +47,24 @@ use Sharqlabs\LaravelAccessGuard\Http\Middleware\VerifyAccess;
 Route::middleware([VerifyAccess::class])->group(function () {
     Route::get('/protected-route', [ProtectedController::class, 'index']);
 });
-
 ```
+
+## Usage in Laravel Project
+After installing your package in a Laravel project, use the following commands:
+
+Add Email:
+
+```php
+ php artisan access-guard:add-record --email="user@example.com"
+```
+
+Add IP to Whitelist:
+
+```php
+php artisan access-guard:add-record --ip="192.168.1.1" --whitelist
+```
+
+
 ## Testing
 
 ```bash

@@ -15,6 +15,7 @@ class CreateUserAccessBrowsersTable   extends Migration
             $table->string('browser'); // User-Agent for session identification
             $table->string('session_token')->unique()->nullable();
             $table->string('otp')->nullable(); // OTP for session validation
+            $table->timestamp('otp_expires_at')->nullable(); // OTP expiration
             $table->timestamp('expires_at')->nullable(); // OTP expiration
             $table->timestamp('verified_at')->nullable(); // Session verified at
             $table->timestamps();

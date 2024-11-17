@@ -21,10 +21,15 @@
                 type="email"
                 name="email"
                 id="email"
+                value="{{ old('email') }}"
                 required
                 class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm placeholder-gray-400"
                 placeholder="you@example.com"
             >
+            <!-- Validation Error Message -->
+            @error('email')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+            @enderror
         </div>
         <div>
             <button

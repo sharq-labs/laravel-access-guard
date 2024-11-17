@@ -57,6 +57,6 @@ class VerifyAccess
     {
         $record = UserAccessRecord::query()->where('primary_ip', $clientIp)->first();
 
-        return $record && $record->no_expiration;
+        return $record && $record->is_whitelisted;
     }
 }

@@ -33,7 +33,7 @@ class AccessVerificationController
     public function submitForm(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email',
+            'email' => 'required|email|exists:user_access_records,email',
         ]);
 
         $email = $validated['email'];
@@ -65,7 +65,7 @@ class AccessVerificationController
             ->where('session_ip', $clientIp)
             ->first();
 
-        if (!$browserSession || $browserSession->otp != $validated['otp']) {
+        if (!$browserSession || $browserSession->otp != $validated['otp'] || $browserSession->otp_expires_at->isPast()) {
             return back()->withErrors(['otp' => 'Invalid or expired OTP.']);
         }
 
@@ -101,7 +101,7 @@ class AccessVerificationController
             [
                 'session_ip' => $clientIp,
                 'session_token' => $token,
-                'expires_at' => now()->addMinutes($tokenExpiry),
+                'otp_expires_at' => now()->addMinutes(10),
             ]
         );
     }
@@ -125,7 +125,9 @@ class AccessVerificationController
      */
     protected function markSessionAsVerified(UserAccessBrowser $browserSession): void
     {
-        $browserSession->update(['otp' => null, 'verified_at' => now()]);
+        $tokenExpiry = config('access-guard.session_token_expiry', 180); // Default to 3 hours
+
+        $browserSession->update(['otp' => null, 'verified_at' => now(), 'expires_at' => now()->addMinutes($tokenExpiry)]);
         $browserSession->userAccessRecord->update(['last_verified_at' => now()]);
     }
 

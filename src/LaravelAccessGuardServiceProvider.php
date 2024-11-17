@@ -41,6 +41,12 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
 
         // Load views
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'laravel-access-guard');
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                AddAccessRecordCommand::class,
+            ]);
+        }
     }
 
     /**
