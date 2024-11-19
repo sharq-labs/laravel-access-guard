@@ -4,6 +4,7 @@ namespace Sharqlabs\LaravelAccessGuard\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Sharqlabs\LaravelAccessGuard\Services\AccessGuardService;
 
 class VerifyAccess
@@ -11,7 +12,10 @@ class VerifyAccess
     public function handle(Request $request, Closure $next)
     {
         $clientIp = $request->ip();
-        $sessionToken = $request->cookie('session_token'); // Retrieve token from cookie
+
+        $session = Session::driver(config('access-guard.session_driver'));
+        $sessionToken = $session->get('session_token');
+
         $browser = $request->header('User-Agent');
 
         // Check access by IP or session token

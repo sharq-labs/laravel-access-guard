@@ -80,8 +80,8 @@ class AccessVerificationController
         $this->markSessionAsVerified($browserSession);
 
         // Use custom session
-        $customSession = Session::driver('access-guard');
-        $customSession->put('session_token', $browserSession->session_token);
+        $session = Session::driver(config('access-guard.session_driver'));
+        $session->put('session_token', $browserSession->session_token);
 
         return redirect()->intended('/');
     }
@@ -120,13 +120,6 @@ class AccessVerificationController
      */
     protected function generateAndSendOtp(UserAccessRecord $record, UserAccessBrowser $browserSession): void
     {
-        $otpRequestInterval = config('access-guard.otp_request_min_interval', 1);
-
-        if ($browserSession->otp_generated_at?->diffInMinutes(now()) < $otpRequestInterval) {
-            back()->withErrors([
-                'otp' => "You must wait at least {$otpRequestInterval} minute(s) before requesting a new OTP."
-            ])->throwResponse();
-        }
 
         $otp = $this->generateOtp();
 

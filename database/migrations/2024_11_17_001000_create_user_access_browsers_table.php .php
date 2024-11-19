@@ -16,7 +16,6 @@ class CreateUserAccessBrowsersTable   extends Migration
             $table->string('session_token')->unique()->nullable();
             $table->string('otp')->nullable(); // OTP for session validation
             $table->timestamp('otp_expires_at')->nullable(); // OTP expiration
-            $table->timestamp('otp_generated_at')->nullable(); // Last verification timestamp
             $table->timestamp('expires_at')->nullable(); // OTP expiration
             $table->timestamp('verified_at')->nullable(); // Session verified at
             $table->timestamps();

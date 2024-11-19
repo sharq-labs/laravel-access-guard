@@ -8,7 +8,6 @@ use Sharqlabs\LaravelAccessGuard\Commands\ShowWhitelistedIpsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Illuminate\Support\Facades\RateLimiter;
-use Illuminate\Support\Facades\Session;
 
 class LaravelAccessGuardServiceProvider extends PackageServiceProvider
 {
@@ -33,9 +32,6 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
 
         // Define rate limiter for Access Guard
         $this->defineRateLimiter();
-
-        // Register custom session driver
-        $this->registerCustomSessionDriver();
 
         // Publish configuration file
         $this->publishes([
@@ -89,21 +85,4 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
         });
     }
 
-    /**
-     * Register a custom session driver for Access Guard.
-     */
-    protected function registerCustomSessionDriver(): void
-    {
-        Session::extend('access-guard', function ($app) {
-            config([
-                'session.driver' => config('access-guard.session.driver', 'file'),
-                'session.cookie' => config('access-guard.session.cookie', 'access_guard_session'),
-                'session.lifetime' => config('access-guard.session.lifetime', 120),
-                'session.files' => config('access-guard.session.files', storage_path('framework/sessions/access-guard')),
-            ]);
-
-            return $app->make('session')->driver(config('session.driver'));
-        });
-
-    }
 }
