@@ -50,7 +50,7 @@ class AddAccessRecordCommand extends Command
 
         $this->info('Access record added successfully:');
         $this->table(
-            ['ID', 'Email', 'Primary IP', 'Is Whitelisted', 'Created At', 'Updated At'],
+            ['ID', 'Email', 'Domain', 'Primary IP', 'Is Whitelisted', 'Created At', 'Updated At'],
             [[
                 'ID' => $record->id,
                 'Email' => $record->email ?? 'N/A',

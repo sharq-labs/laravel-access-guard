@@ -36,7 +36,7 @@ class ShowWhitelistedIpsCommand extends Command
 
         $this->info('Whitelisted IPs:');
         $this->table(
-            ['ID', 'Email', 'Primary IP', 'Created At', 'Updated At'],
+            ['ID', 'Email', 'Domain','Primary IP', 'Created At', 'Updated At'],
             $whitelistedIps->map(function ($record) {
                 return [
                     'ID' => $record->id,

@@ -48,6 +48,7 @@ Route::middleware([VerifyAccess::class])->group(function () {
     Route::get('/protected-route', [ProtectedController::class, 'index']);
 });
 ```
+ 
 
 ## Usage in Laravel Project
 After installing your package in a Laravel project, use the following commands:
@@ -73,6 +74,52 @@ Remove Whitelisted IP
 ```php
 php artisan access-guard:remove-whitelisted --ip="192.168.1.1"
 ```
+
+
+# Environment Variables Configuration
+
+This document provides details on the environment variables used for configuring the system.
+
+---
+
+## Session Configuration
+
+| Variable                     | Description                          | Default Value |
+|------------------------------|--------------------------------------|---------------|
+| `SESSION_TOKEN_EXPIRY_DAYS`  | Defines the session token expiration in days. | `7`           |
+
+---
+
+## OTP (One-Time Password) Configuration
+
+| Variable                 | Description                          | Default Value |
+|--------------------------|--------------------------------------|---------------|
+| `OTP_EXPIRES_IN_MINUTES` | Specifies the OTP expiration time in minutes. | `10`          |
+
+---
+
+## Rate Limiting Configuration
+
+| Variable                                   | Description                                           | Default Value |
+|-------------------------------------------|-------------------------------------------------------|---------------|
+| `ACCESS_GUARD_RATE_LIMIT_REQUESTS`        | Maximum number of requests allowed within the rate-limit window. | `500`         |
+| `ACCESS_GUARD_RATE_LIMIT_RESET_INTERVAL`  | Duration (in minutes) for the rate-limit to reset.    | `1`           |
+
+---
+
+## Session Driver Configuration
+
+| Variable                        | Description                        | Default Value |
+|---------------------------------|------------------------------------|---------------|
+| `ACCESS_GUARD_SESSION_DRIVER`   | Session driver used for Access Guard. | `file`        |
+
+---
+
+### Notes:
+- Ensure these variables are set in your `.env` file for proper configuration.
+- Default values are provided as a guideline and can be adjusted to meet specific application needs.
+- Use descriptive comments in your `.env` file for better readability and maintenance.
+
 
 
 ## Testing

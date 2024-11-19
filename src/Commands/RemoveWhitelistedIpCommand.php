@@ -57,7 +57,7 @@ class RemoveWhitelistedIpCommand extends Command
 
         $this->info('Whitelisted record removed successfully:');
         $this->table(
-            ['ID', 'Email', 'Primary IP'],
+            ['ID', 'Email', 'Domain', 'Primary IP'],
             [[
                 'ID' => $record->id,
                 'Email' => $record->email ?? 'N/A',

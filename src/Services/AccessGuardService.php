@@ -2,7 +2,6 @@
 
 namespace Sharqlabs\LaravelAccessGuard\Services;
 
-use League\Flysystem\Config;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
 use Illuminate\Support\Facades\Request;
@@ -54,7 +53,7 @@ class AccessGuardService
      */
     public static function getCurrentUrlWithoutSubdomain(): string
     {
-        $url = Config::get('app.url', Request::fullUrl());
+        $url = config('app.url', Request::fullUrl());
 
         $parsedUrl = parse_url($url);
 
