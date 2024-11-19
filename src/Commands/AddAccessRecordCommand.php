@@ -4,6 +4,7 @@ namespace Sharqlabs\LaravelAccessGuard\Commands;
 
 use Illuminate\Console\Command;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
+use Sharqlabs\LaravelAccessGuard\Services\AccessGuardService;
 
 class AddAccessRecordCommand extends Command
 {
@@ -40,7 +41,7 @@ class AddAccessRecordCommand extends Command
 
         // Create or update the record
         $record = UserAccessRecord::updateOrCreate(
-            ['email' => $email],
+            ['email' => $email, 'domain' => AccessGuardService::getCurrentUrlWithoutSubdomain()],
             [
                 'primary_ip' => $ip,
                 'is_whitelisted' => $isWhitelisted,
@@ -53,6 +54,7 @@ class AddAccessRecordCommand extends Command
             [[
                 'ID' => $record->id,
                 'Email' => $record->email ?? 'N/A',
+                'Domain' => $record->domain ?? 'N/A',
                 'Primary IP' => $record->primary_ip ?? 'N/A',
                 'Is Whitelisted' => $record->is_whitelisted ? 'Yes' : 'No',
                 'Created At' => $record->created_at,

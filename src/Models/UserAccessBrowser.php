@@ -15,6 +15,7 @@ class UserAccessBrowser extends Model
         'otp',
         'expires_at',
         'otp_expires_at',
+        'otp_generated_at',
         'verified_at'
     ];
 

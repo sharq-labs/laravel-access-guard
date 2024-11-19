@@ -41,6 +41,7 @@ class ShowWhitelistedIpsCommand extends Command
                 return [
                     'ID' => $record->id,
                     'Email' => $record->email ?? 'N/A',
+                    'Domain' => $record->domain ?? 'N/A',
                     'Primary IP' => $record->primary_ip ?? 'N/A',
                     'Created At' => $record->created_at,
                     'Updated At' => $record->updated_at,

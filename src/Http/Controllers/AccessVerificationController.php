@@ -2,10 +2,15 @@
 
 namespace Sharqlabs\LaravelAccessGuard\Http\Controllers;
 
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
+use Sharqlabs\LaravelAccessGuard\Services\AccessGuardService;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
 use Sharqlabs\LaravelAccessGuard\Notifications\OTPNotification;
+use Carbon\Carbon;
+use Sharqlabs\LaravelAccessGuard\Rules\EmailWithDomain;
 
 class AccessVerificationController
 {
@@ -33,7 +38,9 @@ class AccessVerificationController
     public function submitForm(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email|exists:user_access_records,email',
+            'email' => ['required', 'email', new EmailWithDomain()],
+        ], [
+            'email.exists' => 'The provided email is not registered on this domain',
         ]);
 
         $email = $validated['email'];
@@ -61,7 +68,8 @@ class AccessVerificationController
         $sessionToken = $validated['sessionToken'];
         $clientIp = $request->ip();
 
-        $browserSession = UserAccessBrowser::where('session_token', $sessionToken)
+        $browserSession = UserAccessBrowser::query()
+            ->where('session_token', $sessionToken)
             ->where('session_ip', $clientIp)
             ->first();
 
@@ -71,10 +79,11 @@ class AccessVerificationController
 
         $this->markSessionAsVerified($browserSession);
 
-        $tokenExpiry = config('access-guard.session_token_expiry', 60 * 24 * 7); // Default to 7 days
-        $cookie = cookie( 'session_token', $browserSession->session_token, $tokenExpiry, '/', null, app()->environment('production'), true );
+        // Use custom session
+        $customSession = Session::driver('access-guard');
+        $customSession->put('session_token', $browserSession->session_token);
 
-        return redirect()->intended('/')->withCookie($cookie);
+        return redirect()->intended('/');
     }
 
     /**
@@ -83,7 +92,7 @@ class AccessVerificationController
     protected function createOrUpdateUserRecord(string $email, string $primaryIp): UserAccessRecord
     {
         return UserAccessRecord::updateOrCreate(
-            ['email' => $email],
+            ['email' => $email, 'domain' => AccessGuardService::getCurrentUrlWithoutSubdomain()],
             ['primary_ip' => $primaryIp]
         );
     }
@@ -94,14 +103,14 @@ class AccessVerificationController
     protected function createOrUpdateBrowserSession(UserAccessRecord $record, string $clientIp, string $browser): UserAccessBrowser
     {
         $token = bin2hex(random_bytes(32)); // Generate secure token
-        $tokenExpiry = config('access-guard.session_token_expiry', 180); // Default to 3 hours
 
         return $record->browsers()->updateOrCreate(
             ['browser' => $browser],
             [
                 'session_ip' => $clientIp,
                 'session_token' => $token,
-                'otp_expires_at' => now()->addMinutes(10),
+                'otp_expires_at' => now()->addMinutes(config('access-guard.otp_expires_in_minutes', 10)),
+                'otp_generated_at' => now(),
             ]
         );
     }
@@ -111,24 +120,58 @@ class AccessVerificationController
      */
     protected function generateAndSendOtp(UserAccessRecord $record, UserAccessBrowser $browserSession): void
     {
-        $otp = rand(100000, 999999);
+        $otpRequestInterval = config('access-guard.otp_request_min_interval', 1);
+
+        if ($browserSession->otp_generated_at?->diffInMinutes(now()) < $otpRequestInterval) {
+            back()->withErrors([
+                'otp' => "You must wait at least {$otpRequestInterval} minute(s) before requesting a new OTP."
+            ])->throwResponse();
+        }
+
+        $otp = $this->generateOtp();
 
         $browserSession->update([
             'otp' => $otp,
+            'otp_generated_at' => now(),
         ]);
 
         $record->notify(new OTPNotification($otp));
     }
+
 
     /**
      * Mark the browser session and user record as verified.
      */
     protected function markSessionAsVerified(UserAccessBrowser $browserSession): void
     {
-        $tokenExpiry = config('access-guard.session_token_expiry', 180); // Default to 3 hours
+        $expiryDate = $this->getTokenExpiryDate();
 
-        $browserSession->update(['otp' => null, 'verified_at' => now(), 'expires_at' => now()->addMinutes($tokenExpiry)]);
+        $browserSession->update([
+            'otp' => null,
+            'verified_at' => now(),
+            'expires_at' => $expiryDate,
+        ]);
+
         $browserSession->userAccessRecord->update(['last_verified_at' => now()]);
+    }
+
+    /**
+     * Get the token expiry date based on the configuration.
+     */
+    protected function getTokenExpiryDate(): Carbon
+    {
+        return config('access-guard.session_token_expiry', now()->addDays(7));
+    }
+
+    /**
+     * Generate a random OTP.
+     *
+     * @return int
+     * @throws Exception
+     */
+    protected function generateOtp(): int
+    {
+        return random_int(100000, 999999); // Configurable OTP length
     }
 
 }

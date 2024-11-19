@@ -61,6 +61,7 @@ class RemoveWhitelistedIpCommand extends Command
             [[
                 'ID' => $record->id,
                 'Email' => $record->email ?? 'N/A',
+                'Domain' => $record->domain ?? 'N/A',
                 'Primary IP' => $record->primary_ip ?? 'N/A',
             ]]
         );

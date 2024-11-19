@@ -2,8 +2,10 @@
 
 namespace Sharqlabs\LaravelAccessGuard\Services;
 
+use League\Flysystem\Config;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
+use Illuminate\Support\Facades\Request;
 
 class AccessGuardService
 {
@@ -43,5 +45,31 @@ class AccessGuardService
         }
 
         return $browserSession->browser === $browser;
+    }
+
+    /**
+     * Get the current URL without the subdomain.
+     *
+     * @return string
+     */
+    public static function getCurrentUrlWithoutSubdomain(): string
+    {
+        $url = Config::get('app.url', Request::fullUrl());
+
+        $parsedUrl = parse_url($url);
+
+        $host = $parsedUrl['host'] ?? '';
+        $hostParts = explode('.', $host);
+
+        // Remove the subdomain if it exists (assuming at least 2 parts like domain and TLD)
+        if (count($hostParts) > 2) {
+            $host = implode('.', array_slice($hostParts, -2));
+        }
+
+        $scheme = $parsedUrl['scheme'] ?? 'http';
+        $path = $parsedUrl['path'] ?? '';
+        $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+
+        return $scheme . '://' . $host . $path . $query;
     }
 }

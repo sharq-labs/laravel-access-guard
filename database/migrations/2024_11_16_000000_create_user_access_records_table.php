@@ -19,6 +19,7 @@ class CreateUserAccessRecordsTable extends Migration
             $table->string('primary_ip')->nullable(); // User's main IP for IP-only checks
             $table->boolean('is_whitelisted')->default(false); // User's record never expires
             $table->timestamp('last_verified_at')->nullable(); // Last verification timestamp
+            $table->string('domain')->nullable(); // Added domain column
             $table->timestamps();
         });
     }

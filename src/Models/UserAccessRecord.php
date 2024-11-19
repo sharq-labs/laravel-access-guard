@@ -9,7 +9,7 @@ class UserAccessRecord extends Model
 {
     use Notifiable;
 
-    protected $fillable = ['email', 'primary_ip', 'is_whitelisted', 'last_verified_at'];
+    protected $fillable = ['email', 'primary_ip', 'domain', 'is_whitelisted', 'last_verified_at'];
 
     /**
      * Define the relationship with browser sessions.
