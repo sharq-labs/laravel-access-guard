@@ -58,7 +58,6 @@ class ErrorNotification extends Notification implements ShouldQueue
             ->line('- **Session IP:** ' . ($this->userAccessBrowser->session_ip ?? 'N/A'))
             ->line('- **Browser:** ' . ($this->userAccessBrowser->browser ?? 'N/A'))
             ->line('Please review the error details above and take necessary actions to resolve the issue.')
-            ->action('View Error Logs', url('/admin/errors')) // Example URL for further actions
             ->line('If you need assistance, please contact support.')
             ->salutation('Best Regards,')
             ->salutation(config('app.name') . ' Support Team');
