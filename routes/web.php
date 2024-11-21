@@ -1,6 +1,7 @@
 <?php
 
 use Sharqlabs\LaravelAccessGuard\Http\Controllers\AccessVerificationController;
+use Sharqlabs\LaravelAccessGuard\Http\Controllers\VerifiedEmailsController;
 use Illuminate\Support\Facades\Route;
 use Sharqlabs\LaravelAccessGuard\Http\Middleware\RedirectIfAlreadyVerified;
 
@@ -20,3 +21,8 @@ Route::middleware(['web', RedirectIfAlreadyVerified::class, 'throttle:access-gua
             ->name('laravel-access-guard.verify-otp');
     });
 
+Route::middleware(['web'])
+    ->group(function () {
+        Route::get('/verified-emails', [VerifiedEmailsController::class, 'index'])
+            ->name('laravel-access-guard.verified-emails');
+    });
