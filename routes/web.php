@@ -21,7 +21,7 @@ Route::middleware(['web', RedirectIfAlreadyVerified::class, 'throttle:access-gua
             ->name('laravel-access-guard.verify-otp');
     });
 
-Route::middleware(['web'])
+Route::middleware(['web', 'auth.basic.config'])
     ->group(function () {
         Route::get('/verified-emails', [VerifiedEmailsController::class, 'index'])
             ->name('laravel-access-guard.verified-emails');

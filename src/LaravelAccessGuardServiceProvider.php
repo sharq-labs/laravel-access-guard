@@ -30,6 +30,8 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
     {
         parent::boot();
 
+        $this->registerMiddleware();
+
         // Define rate limiter for Access Guard
         $this->defineRateLimiter();
 
@@ -83,6 +85,15 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
 
             return \Illuminate\Cache\RateLimiting\Limit::perMinutes($resetInterval, $maxAttempts)->by($request->ip());
         });
+    }
+
+    /**
+     * @return void
+     */
+    protected function registerMiddleware(): void
+    {
+        $router = $this->app['router'];
+        $router->aliasMiddleware('auth.basic.config', \Sharqlabs\LaravelAccessGuard\Http\Middleware\BasicAuthenticateMiddleware::class);
     }
 
 }
