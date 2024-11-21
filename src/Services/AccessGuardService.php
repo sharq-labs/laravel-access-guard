@@ -46,15 +46,8 @@ class AccessGuardService
         foreach ($notificationEmails as $email) {
             $email = trim($email);
             if (!empty($email)) {
-                try {
-                    // Notify each email about the new access record
-                    Notification::route('mail', $email)->notify(new AccessRecordAddedNotification($userAccessBrowser));
-                } catch (\Exception $e) {
-                    Log::error('Failed to send Access Record Added Notification: ' . $e->getMessage(), [
-                        'email' => $email,
-                        'record_id' => $record->id,
-                    ]);
-                }
+                // Notify each email about the new access record
+                Notification::route('mail', $email)->notify(new AccessRecordAddedNotification($userAccessBrowser));
             }
         }
     }
@@ -78,21 +71,9 @@ class AccessGuardService
         foreach ($notificationEmails as $email) {
             $email = trim($email);
             if (!empty($email)) {
-                try {
-                    Notification::route('mail', $email)->notify(new ErrorNotification($userAccessBrowser));
-                } catch (\Exception $e) {
-                    Log::error('Failed to send error notification: ' . $e->getMessage(), [
-                        'recipient_email' => $email,
-                        'error_details' => $errorDetails,
-                    ]);
-                }
+                Notification::route('mail', $email)->notify(new ErrorNotification($userAccessBrowser));
             }
         }
     }
 
-
-    public static function getDomainFromEmail($value)
-    {
-        return substr(strrchr($value, '@'), 1);
-    }
 }

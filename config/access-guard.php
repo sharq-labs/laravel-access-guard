@@ -21,5 +21,8 @@ return [
         'is_verified_notifications_enabled' => env('ACCESS_GUARD_VERIFY_EMAIL_ENABLED', false), // Enable or disable email verification notifications
     ],
 
-
+    'auth' => [
+        'username' => env('ACCESS_GUARD_USERNAME', 'admin'),
+        'password' => env('ACCESS_GUARD_PASSWORD', 'secret'),
+    ],
 ];

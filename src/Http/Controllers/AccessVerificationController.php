@@ -3,6 +3,7 @@
 namespace Sharqlabs\LaravelAccessGuard\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Sharqlabs\LaravelAccessGuard\Rule\EmailOrDomainAllowedRule;
 use Sharqlabs\LaravelAccessGuard\Services\OtpService;
 use Sharqlabs\LaravelAccessGuard\Services\UserAccessService;
 
@@ -40,9 +41,9 @@ class AccessVerificationController
     public function submitForm(Request $request)
     {
         $validated = $request->validate([
-            'email' => ['required', 'email', 'exists:user_access_records,email'],
+            'email' => ['required', 'email',new EmailOrDomainAllowedRule],
         ], [
-            'email.exists' => 'The provided email is not registered on this domain',
+            'email.exists' => 'The provided email domain is not registered',
         ]);
 
         try {

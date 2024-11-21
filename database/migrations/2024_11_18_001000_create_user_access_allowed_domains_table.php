@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserAccessRecordsTable extends Migration
+class CreateUserAccessAllowedDomainsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateUserAccessRecordsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_access_records', function (Blueprint $table) {
+        Schema::create('user_access_allowed_domains', function (Blueprint $table) {
             $table->id();
-            $table->string('email')->unique();
-            $table->timestamp('last_verified_at')->nullable(); // Last verification timestamp
+            $table->string('domain')->unique(); // Unique domain field
             $table->timestamps();
         });
     }
@@ -28,6 +27,6 @@ class CreateUserAccessRecordsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_access_records'); // Correct table name
+        Schema::dropIfExists('user_access_allowed_domains');
     }
 }

@@ -36,9 +36,8 @@ class AddAccessRecordCommand extends Command
         }
 
         // Create or update the record
-        $record = UserAccessRecord::updateOrCreate(
-            ['email' => $email],
-            ['domain' => AccessGuardService::getDomainFromEmail($email)]
+        $record = UserAccessRecord::firstOrCreate(
+            ['email' => $email] // Only the email condition
         );
 
 

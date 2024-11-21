@@ -9,7 +9,7 @@ class UserAccessRecord extends Model
 {
     use Notifiable;
 
-    protected $fillable = ['email', 'domain', 'last_verified_at'];
+    protected $fillable = ['email', 'last_verified_at'];
 
     /**
      * Define the relationship with browser sessions.
@@ -27,11 +27,4 @@ class UserAccessRecord extends Model
         $this->browsers()->update(['expires_at' => null]);
     }
 
-    /**
-     * Mark the user as verified.
-     */
-    public function markVerified(): void
-    {
-        $this->update(['last_verified_at' => now()]);
-    }
 }

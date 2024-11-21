@@ -19,9 +19,8 @@ class UserAccessService
 
     protected function createOrUpdateUserRecord(string $email): UserAccessRecord
     {
-        return UserAccessRecord::updateOrCreate(
-            ['email' => $email],
-            ['domain' => AccessGuardService::getDomainFromEmail($email)]
+        return  UserAccessRecord::firstOrCreate(
+            ['email' => $email] // Only the email condition
         );
     }
 
