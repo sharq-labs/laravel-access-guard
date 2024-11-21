@@ -4,14 +4,19 @@ namespace Sharqlabs\LaravelAccessGuard\Notifications;
 
 use AllowDynamicProperties;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-#[AllowDynamicProperties] class AccessRecordAddedNotification extends Notification
+#[AllowDynamicProperties]
+class AccessRecordAddedNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * The user access browser instance.
+     */
+    protected $userAccessBrowser;
 
     /**
      * Create a new notification instance.
@@ -39,11 +44,11 @@ use Illuminate\Notifications\Messages\MailMessage;
             ->greeting('Hello,')
             ->line('A new access record has been added.')
             ->line('Details:')
-            ->line('Email: ' . ($this->userAccessBrowser->email ?? 'N/A'))
-            ->line('Domain: ' . ($this->userAccessBrowser->domain ?? 'N/A'))
+            ->line('Email: ' . ($this->userAccessBrowser->record->email ?? 'N/A'))
+            ->line('Domain: ' . ($this->userAccessBrowser->record->domain ?? 'N/A'))
             ->line('Session Ip: ' . ($this->userAccessBrowser->session_ip ?? 'N/A'))
-            ->line('browser: ' . ($this->userAccessBrowser ?? 'N/A'))
-            ->line('expires at: ' . ($this->expires_at ?? 'N/A'))
+            ->line('Browser: ' . ($this->userAccessBrowser->browser ?? 'N/A'))
+            ->line('Expires At: ' . ($this->userAccessBrowser->expires_at ?? 'N/A'))
             ->line('Thank you for using our application!');
     }
 }

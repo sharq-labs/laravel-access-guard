@@ -43,11 +43,13 @@ class OTPNotification extends Notification implements ShouldQueue
     public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Your One-Time Password (OTP)')
+            ->subject('Your One-Time Password (OTP) for Secure Access')
             ->greeting('Hello!')
-            ->line('Your OTP for access is:')
+            ->line('You are receiving this email because you requested access to your account.')
+            ->line('Your One-Time Password (OTP) is:')
             ->line("**{$this->otp}**")
             ->line('This OTP is valid for a limited time only. Please do not share it with anyone.')
-            ->salutation('Thank you!');
-    }
+            ->line('If you did not request this OTP, please ignore this email or contact support immediately.')
+            ->salutation('Best Regards,')
+            ->salutation(config('app.name') . ' Team');    }
 }

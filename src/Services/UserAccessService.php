@@ -4,6 +4,7 @@ namespace Sharqlabs\LaravelAccessGuard\Services;
 
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
+use Sharqlabs\LaravelAccessGuard\Notifications\OTPNotification;
 
 class UserAccessService
 {

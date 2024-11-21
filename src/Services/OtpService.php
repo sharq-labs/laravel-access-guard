@@ -5,6 +5,7 @@ namespace Sharqlabs\LaravelAccessGuard\Services;
 use Illuminate\Support\Facades\Session;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
 use Exception;
+use Illuminate\Validation\ValidationException;
 
 class OtpService
 {
@@ -15,16 +16,19 @@ class OtpService
         if (!$userAccessBrowser || $this->isOtpInvalid($userAccessBrowser, $otp)) {
             AccessGuardService::sendErrorNotification($userAccessBrowser);
 
-            return back()->withErrors(['otp' => 'Invalid or expired OTP.']);
+            throw ValidationException::withMessages(['otp' => 'Invalid or expired OTP.']);
         }
 
         $this->markSessionAsVerified($userAccessBrowser);
         $this->storeSessionToken($userAccessBrowser);
+
+        return redirect()->intended('/');
+
     }
 
     protected function findBrowserSession(string $sessionToken, string $clientIp): ?UserAccessBrowser
     {
-        return UserAccessBrowser::where('session_token', $sessionToken)
+        return UserAccessBrowser::query()->where('session_token', $sessionToken)
             ->where('session_ip', $clientIp)
             ->first();
     }
