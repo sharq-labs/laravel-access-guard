@@ -16,7 +16,6 @@ class VerifiedEmailsController
 
             return DataTables::of($verifiedEmails)
                 ->addColumn('email', fn($record) => $record->email)
-                ->addColumn('domain', fn($record) => $record->domain)
                 ->addColumn('last_verified', fn($record) => $record->last_verified_at ?? 'N/A')
                 ->addColumn('browser_details', function ($record) {
                     return view('laravel-access-guard::partials.browser-details', ['browsers' => $record->browsers])->render();

@@ -295,7 +295,6 @@
                 <thead>
                 <tr>
                     <th style="width: 15%;"><i class="fas fa-envelope"></i> Email</th>
-                    <th style="width: 15%;"><i class="fas fa-globe"></i> Domain</th>
                     <th style="width: 15%;"><i class="fas fa-globe"></i>Session Status</th>
                     <th style="width: 10%;"><i class="fas fa-check-circle"></i> Last Verified</th>
                     <th style="width: 50%;"><i class="fas fa-desktop"></i> Browser Details</th>
