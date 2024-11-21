@@ -29,7 +29,7 @@ class OtpService
     protected function findBrowserSession(string $sessionToken, string $clientIp): ?UserAccessBrowser
     {
         return UserAccessBrowser::query()->where('session_token', $sessionToken)
-            ->where('session_ip', $clientIp)
+            ->with('userAccessRecord')
             ->first();
     }
 
