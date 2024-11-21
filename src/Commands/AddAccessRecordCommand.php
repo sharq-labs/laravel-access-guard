@@ -21,7 +21,7 @@ class AddAccessRecordCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Add an email or IP address to the user_access_records table with optional whitelist status';
+    protected $description = 'Add an email address to the user_access_records table with optional whitelist status';
 
     /**
      * Execute the console command.
@@ -36,10 +36,10 @@ class AddAccessRecordCommand extends Command
         }
 
         // Create or update the record
-        $record =  UserAccessRecord::updateOrCreate(
-        ['email' => $email],
-        ['domain' => AccessGuardService::getDomainFromEmail($email)]
-    );
+        $record = UserAccessRecord::updateOrCreate(
+            ['email' => $email],
+            ['domain' => AccessGuardService::getDomainFromEmail($email)]
+        );
 
 
         $this->info('Access record added successfully:');

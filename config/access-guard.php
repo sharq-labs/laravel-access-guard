@@ -16,7 +16,7 @@ return [
 
     // Notification email settings
     'notifications' => [
-        'recipient_emails' => env('ACCESS_GUARD_NOTIFICATION_EMAILS', ''), // Comma-separated list of recipient email addresses
+        'recipient_emails' => env('ACCESS_GUARD_NOTIFICATION_EMAILS', ''), // Comma-separated list of recipient email addresses example : admin@example.com,user@example.com
         'is_errors_notifications_enabled' => env('ACCESS_GUARD_ERROR_NOTIFICATIONS_ENABLED', false), // Enable or disable error notifications
         'is_verified_notifications_enabled' => env('ACCESS_GUARD_VERIFY_EMAIL_ENABLED', false), // Enable or disable email verification notifications
     ],

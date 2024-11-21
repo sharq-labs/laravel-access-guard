@@ -6,21 +6,21 @@ use Illuminate\Console\Command;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
 use Exception;
 
-class ShowWhitelistedIpsCommand extends Command
+class ShowWhitelistedEmailsCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'access-guard:show-whitelisted-ips';
+    protected $signature = 'access-guard:show-whitelisted';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'List all whitelisted IPs from the user_access_records table';
+    protected $description = 'List all whitelisted Emails from the user_access_records table';
 
     /**
      * Execute the console command.
@@ -28,17 +28,17 @@ class ShowWhitelistedIpsCommand extends Command
     public function handle(): int
     {
         try {
-            $whitelistedIps = $this->getWhitelistedIps();
+            $whitelisted = $this->getWhitelisted();
 
-            if ($whitelistedIps->isEmpty()) {
-                $this->info('No whitelisted IPs found.');
+            if ($whitelisted->isEmpty()) {
+                $this->info('No whitelisted Emails found.');
                 return 0;
             }
 
-            $this->info('Whitelisted IPs:');
+            $this->info('Whitelisted Emails:');
             $this->table(
                 ['ID', 'Email', 'Domain', 'Created At', 'Updated At'],
-                $whitelistedIps->map(function (UserAccessRecord $record) {
+                $whitelisted->map(function (UserAccessRecord $record) {
                     return [
                         'ID' => $record->id,
                         'Email' => $record->email ?? 'N/A',
@@ -51,17 +51,17 @@ class ShowWhitelistedIpsCommand extends Command
 
             return 0;
         } catch (Exception $e) {
-            $this->error('An error occurred while fetching whitelisted IPs: ' . $e->getMessage());
+            $this->error('An error occurred while fetching whitelisted Emails: ' . $e->getMessage());
             return 1;
         }
     }
 
     /**
-     * Get the list of whitelisted IPs.
+     * Get the list of whitelisted Emails.
      *
      * @return \Illuminate\Support\Collection
      */
-    protected function getWhitelistedIps()
+    protected function getWhitelisted()
     {
         return UserAccessRecord::query()
             ->whereHas('browsers', function ($query) {

@@ -68,11 +68,11 @@ php artisan access-guard:add-record --ip="192.168.1.1" --is-whitelisted
 Show Whitelisted IPs
 
 ```php
-php artisan access-guard:show-whitelisted-ips
+php artisan access-guard:show-whitelisted
 ```
 Remove Whitelisted IP
 ```php
-php artisan access-guard:remove-whitelisted --ip="192.168.1.1"
+php artisan access-guard:remove-whitelisted --email="user@example.com"
 ```
 
 
@@ -114,6 +114,15 @@ This document provides details on the environment variables used for configuring
 | `ACCESS_GUARD_SESSION_DRIVER`   | Session driver used for Access Guard. | `file`        |
 
 ---
+
+### Notification Email Settings
+
+| Variable                                | Description                                                          | Default Value          |
+|----------------------------------------|----------------------------------------------------------------------|------------------------|
+| `ACCESS_GUARD_NOTIFICATION_EMAILS`     | Comma-separated list of recipient email addresses for notifications. | `""` (empty string)    |
+| `ACCESS_GUARD_ERROR_NOTIFICATIONS_ENABLED` | Enable or disable error notifications.                                | `false`                |
+| `ACCESS_GUARD_VERIFY_EMAIL_ENABLED`    | Enable or disable email verification notifications.                   | `false`                |
+
 
 ### Notes:
 - Ensure these variables are set in your `.env` file for proper configuration.
