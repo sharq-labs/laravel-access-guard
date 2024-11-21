@@ -9,7 +9,7 @@ class UserAccessRecord extends Model
 {
     use Notifiable;
 
-    protected $fillable = ['email', 'primary_ip', 'domain', 'is_whitelisted', 'last_verified_at'];
+    protected $fillable = ['email', 'domain', 'last_verified_at'];
 
     /**
      * Define the relationship with browser sessions.
@@ -17,6 +17,14 @@ class UserAccessRecord extends Model
     public function browsers(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(UserAccessBrowser::class);
+    }
+
+    /**
+     * Set expires_at to null for all related browsers.
+     */
+    public function clearBrowserExpiry(): void
+    {
+        $this->browsers()->update(['expires_at' => null]);
     }
 
     /**

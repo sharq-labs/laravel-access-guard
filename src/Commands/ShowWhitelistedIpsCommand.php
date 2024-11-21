@@ -4,6 +4,7 @@ namespace Sharqlabs\LaravelAccessGuard\Commands;
 
 use Illuminate\Console\Command;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
+use Exception;
 
 class ShowWhitelistedIpsCommand extends Command
 {
@@ -24,31 +25,48 @@ class ShowWhitelistedIpsCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
-        $whitelistedIps = UserAccessRecord::where('is_whitelisted', true)
-            ->get(['id', 'email', 'primary_ip', 'created_at', 'updated_at']);
+        try {
+            $whitelistedIps = $this->getWhitelistedIps();
 
-        if ($whitelistedIps->isEmpty()) {
-            $this->info('No whitelisted IPs found.');
+            if ($whitelistedIps->isEmpty()) {
+                $this->info('No whitelisted IPs found.');
+                return 0;
+            }
+
+            $this->info('Whitelisted IPs:');
+            $this->table(
+                ['ID', 'Email', 'Domain', 'Created At', 'Updated At'],
+                $whitelistedIps->map(function (UserAccessRecord $record) {
+                    return [
+                        'ID' => $record->id,
+                        'Email' => $record->email ?? 'N/A',
+                        'Domain' => $record->domain ?? 'N/A',
+                        'Created At' => $record->created_at->toDateTimeString(),
+                        'Updated At' => $record->updated_at->toDateTimeString(),
+                    ];
+                })->toArray()
+            );
+
             return 0;
+        } catch (Exception $e) {
+            $this->error('An error occurred while fetching whitelisted IPs: ' . $e->getMessage());
+            return 1;
         }
+    }
 
-        $this->info('Whitelisted IPs:');
-        $this->table(
-            ['ID', 'Email', 'Domain','Primary IP', 'Created At', 'Updated At'],
-            $whitelistedIps->map(function ($record) {
-                return [
-                    'ID' => $record->id,
-                    'Email' => $record->email ?? 'N/A',
-                    'Domain' => $record->domain ?? 'N/A',
-                    'Primary IP' => $record->primary_ip ?? 'N/A',
-                    'Created At' => $record->created_at,
-                    'Updated At' => $record->updated_at,
-                ];
-            })->toArray()
-        );
-
-        return 0;
+    /**
+     * Get the list of whitelisted IPs.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    protected function getWhitelistedIps()
+    {
+        return UserAccessRecord::query()
+            ->whereHas('browsers', function ($query) {
+                $query->where('expires_at', '>', now());
+            })
+            ->get();
     }
 }

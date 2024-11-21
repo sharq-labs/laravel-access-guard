@@ -12,6 +12,14 @@ return [
     ],
 
     // Session configuration for Access Guard
-    'session_driver' =>  env('ACCESS_GUARD_SESSION_DRIVER', 'file'), // Max attempts per minute
+    'session_driver' =>  env('ACCESS_GUARD_SESSION_DRIVER', 'file'),
+
+    // Notification email settings
+    'notifications' => [
+        'recipient_emails' => env('ACCESS_GUARD_NOTIFICATION_EMAILS', ''), // Comma-separated list of recipient email addresses
+        'is_errors_notifications_enabled' => env('ACCESS_GUARD_ERROR_NOTIFICATIONS_ENABLED', false), // Enable or disable error notifications
+        'is_verified_notifications_enabled' => env('ACCESS_GUARD_VERIFY_EMAIL_ENABLED', false), // Enable or disable email verification notifications
+    ],
+
 
 ];

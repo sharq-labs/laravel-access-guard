@@ -19,8 +19,7 @@ class VerifyAccess
         $browser = $request->header('User-Agent');
 
         // Check access by IP or session token
-        if (AccessGuardService::isIpWhitelisted($clientIp) ||
-            AccessGuardService::validateSessionToken($sessionToken, $browser)) {
+        if (AccessGuardService::validateSessionToken($sessionToken, $browser)) {
             return $next($request);
         }
 

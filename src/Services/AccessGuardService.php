@@ -2,25 +2,15 @@
 
 namespace Sharqlabs\LaravelAccessGuard\Services;
 
+use Sharqlabs\LaravelAccessGuard\Notifications\AccessRecordAddedNotification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
-use Sharqlabs\LaravelAccessGuard\Models\UserAccessRecord;
 use Illuminate\Support\Facades\Request;
+use Sharqlabs\LaravelAccessGuard\Notifications\ErrorNotification;
 
 class AccessGuardService
 {
-    /**
-     * Check if the given IP is whitelisted.
-     *
-     * @param string $clientIp
-     * @return bool
-     */
-    public static function isIpWhitelisted(string $clientIp): bool
-    {
-        return UserAccessRecord::query()
-            ->where('is_whitelisted', true)
-            ->where('primary_ip', $clientIp)
-            ->exists();
-    }
 
     /**
      * Validate a session token for the given browser.
@@ -47,28 +37,62 @@ class AccessGuardService
     }
 
     /**
-     * Get the current URL without the subdomain.
-     *
-     * @return string
+     * Handle email verification logic.
      */
-    public static function getCurrentUrlWithoutSubdomain(): string
+    public static function sendEmailVerificationSuccessNotification(UserAccessBrowser $userAccessBrowser): void
     {
-        $url = config('app.url', Request::fullUrl());
+        $notificationEmails = explode(',', config('access-guard.notifications.recipient_emails', ''));
 
-        $parsedUrl = parse_url($url);
+        foreach ($notificationEmails as $email) {
+            $email = trim($email);
+            if (!empty($email)) {
+                try {
+                    // Notify each email about the new access record
+                    Notification::route('mail', $email)->notify(new AccessRecordAddedNotification($userAccessBrowser));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send Access Record Added Notification: ' . $e->getMessage(), [
+                        'email' => $email,
+                        'record_id' => $record->id,
+                    ]);
+                }
+            }
+        }
+    }
 
-        $host = $parsedUrl['host'] ?? '';
-        $hostParts = explode('.', $host);
 
-        // Remove the subdomain if it exists (assuming at least 2 parts like domain and TLD)
-        if (count($hostParts) > 2) {
-            $host = implode('.', array_slice($hostParts, -2));
+    /**
+     * Send error notifications.
+     *
+     * @param UserAccessBrowser $userAccessBrowser
+     * @return void
+     */
+    public static function sendErrorNotification(UserAccessBrowser $userAccessBrowser): void
+    {
+        // Check if error notifications are enabled
+        if (!config('access-guard.notifications.is_errors_notifications_enabled')) {
+            return;
         }
 
-        $scheme = $parsedUrl['scheme'] ?? 'http';
-        $path = $parsedUrl['path'] ?? '';
-        $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        $notificationEmails = explode(',', config('access-guard.notifications.recipient_emails', ''));
 
-        return $scheme . '://' . $host . $path . $query;
+        foreach ($notificationEmails as $email) {
+            $email = trim($email);
+            if (!empty($email)) {
+                try {
+                    Notification::route('mail', $email)->notify(new ErrorNotification($userAccessBrowser));
+                } catch (\Exception $e) {
+                    Log::error('Failed to send error notification: ' . $e->getMessage(), [
+                        'recipient_email' => $email,
+                        'error_details' => $errorDetails,
+                    ]);
+                }
+            }
+        }
+    }
+
+
+    public static function getDomainFromEmail($value)
+    {
+        return substr(strrchr($value, '@'), 1);
     }
 }

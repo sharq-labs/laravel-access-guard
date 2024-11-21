@@ -19,8 +19,7 @@ class RedirectIfAlreadyVerified
         $browser = $request->header('User-Agent');
 
         // Redirect if the IP is whitelisted or session token is valid
-        if (AccessGuardService::isIpWhitelisted($clientIp) ||
-            AccessGuardService::validateSessionToken($sessionToken, $browser)) {
+        if (AccessGuardService::validateSessionToken($sessionToken, $browser)) {
             return redirect('/');
         }
 

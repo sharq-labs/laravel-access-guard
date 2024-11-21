@@ -51,11 +51,6 @@ class UserAccessBrowser extends Model
      */
     public function isExpired(): bool
     {
-        // Check if the parent user record does not expire
-        if ($this->userAccessRecord->is_whitelisted) {
-            return false;
-        }
-
         // If no expiration time is set, assume it is expired
         if (is_null($this->expires_at)) {
             return true;
