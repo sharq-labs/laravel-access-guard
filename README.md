@@ -53,13 +53,20 @@ Route::middleware([VerifyAccess::class])->group(function () {
 ## Usage in Laravel Project
 After installing your package in a Laravel project, use the following commands:
 
+
+Add Domain:
+
+```php
+php artisan access-guard:add-domain --domain=google.com
+```
+
 Add Email:
 
 ```php
  php artisan access-guard:add-record --email="user@example.com"
 ```
 
-Show Whitelisted IPs
+Show Whitelisted Email
 
 ```php
 php artisan access-guard:show-whitelisted
@@ -117,6 +124,14 @@ This document provides details on the environment variables used for configuring
 | `ACCESS_GUARD_ERROR_NOTIFICATIONS_ENABLED` | Enable or disable error notifications.                                | `false`                |
 | `ACCESS_GUARD_VERIFY_EMAIL_ENABLED`    | Enable or disable email verification notifications.                   | `false`                |
 
+### Basic Auth Authentication Settings
+
+```plaintext
+| Variable                   | Description                                       | Default Value |
+|----------------------------|---------------------------------------------------|---------------|
+| `ACCESS_GUARD_USERNAME`    | The username used for Basic Authentication.       | `admin`       |
+| `ACCESS_GUARD_PASSWORD`    | The password used for Basic Authentication.       | `secret`      |
+```
 
 ### Notes:
 - Ensure these variables are set in your `.env` file for proper configuration.

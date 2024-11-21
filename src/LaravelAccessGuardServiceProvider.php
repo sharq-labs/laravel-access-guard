@@ -4,6 +4,7 @@ namespace Sharqlabs\LaravelAccessGuard;
 
 use Sharqlabs\LaravelAccessGuard\Commands\AddAccessRecordCommand;
 use Sharqlabs\LaravelAccessGuard\Commands\RemoveWhitelistedIpCommand;
+use Sharqlabs\LaravelAccessGuard\Commands\AddAllowedDomainCommand;
 use Sharqlabs\LaravelAccessGuard\Commands\ShowWhitelistedEmailsCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -55,6 +56,8 @@ class LaravelAccessGuardServiceProvider extends PackageServiceProvider
                 AddAccessRecordCommand::class,
                 ShowWhitelistedEmailsCommand::class,
                 RemoveWhitelistedIpCommand::class,
+                RemoveWhitelistedIpCommand::class,
+                AddAllowedDomainCommand::class,
             ]);
         }
     }
