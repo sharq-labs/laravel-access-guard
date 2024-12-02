@@ -5,26 +5,31 @@ namespace Sharqlabs\LaravelAccessGuard\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Sharqlabs\LaravelAccessGuard\Models\UserAccessBrowser;
 use Sharqlabs\LaravelAccessGuard\Services\AccessGuardService;
 
-class VerifyAccess
+class VerifySessionTokenMiddleware
 {
     public function handle(Request $request, Closure $next)
     {
+
+        $clientIp = $request->ip();
+
         $session = Session::driver(config('access-guard.session_driver'));
-        $sessionToken = $session->get('session_token');
+        $sessionToken = $request->session_token;
 
         $browser = $request->header('User-Agent');
 
+
+        $browserSession = UserAccessBrowser::query()
+            ->where('session_token', $sessionToken)
+            ->first();
+
         // Check access by IP or session token
-        if (AccessGuardService::validateSessionToken($sessionToken, $browser)) {
+        if ($browserSession && $browserSession->browser === $browser && $request->ip() == $browserSession->session_ip) {
             return $next($request);
         }
 
-        $session = Session::driver(config('access-guard.session_driver'));
-        $pathAfterDomain = $session->start();
-
-        $pathAfterDomain = $session->get('url_intended', '/');
         // Redirect to the access verification form
         return redirect()->route('laravel-access-guard.form')->with('error', 'Access denied. Please verify.');
     }

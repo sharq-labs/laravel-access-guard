@@ -14,13 +14,15 @@ class RedirectIfAlreadyVerified
         $clientIp = $request->ip();
 
         $session = Session::driver(config('access-guard.session_driver'));
+        $session->start();
+
         $sessionToken = $session->get('session_token');
 
         $browser = $request->header('User-Agent');
 
         // Redirect if the IP is whitelisted or session token is valid
         if (AccessGuardService::validateSessionToken($sessionToken, $browser)) {
-            return redirect('/');
+            return redirect()->intended($session->get('url_intended', '/'));
         }
 
         // Proceed if not verified

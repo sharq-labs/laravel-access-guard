@@ -3,6 +3,7 @@
 namespace Sharqlabs\LaravelAccessGuard\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 use Sharqlabs\LaravelAccessGuard\Rule\EmailOrDomainAllowedRule;
 use Sharqlabs\LaravelAccessGuard\Services\OtpService;
 use Sharqlabs\LaravelAccessGuard\Services\UserAccessService;
@@ -41,7 +42,7 @@ class AccessVerificationController
     public function submitForm(Request $request)
     {
         $validated = $request->validate([
-            'email' => ['required', 'email',new EmailOrDomainAllowedRule],
+            'email' => ['required', 'email', new EmailOrDomainAllowedRule],
         ], [
             'email.exists' => 'The provided email domain is not registered',
         ]);
@@ -76,7 +77,10 @@ class AccessVerificationController
                 $request->ip()
             );
 
-            return redirect()->intended('/');
+            $session = Session::driver(config('access-guard.session_driver'));
+            $pathAfterDomain = $session->get('url_intended', '/');
+
+            return redirect($pathAfterDomain);
         } catch (\Exception $e) {
             return back()->withErrors(['otp' => $e->getMessage()]);
         }

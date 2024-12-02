@@ -7,7 +7,7 @@ return [
 
     // Rate-limiting settings
     'rate_limit' => [
-        'requests' => env('ACCESS_GUARD_RATE_LIMIT_REQUESTS', 500), // Max attempts per minute
+        'requests' => env('ACCESS_GUARD_RATE_LIMIT_REQUESTS', 5), // Max attempts per minute
         'reset_interval' => env('ACCESS_GUARD_RATE_LIMIT_RESET_INTERVAL', 1), // Reset time in minutes
     ],
 
