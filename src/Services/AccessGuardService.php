@@ -59,10 +59,15 @@ class AccessGuardService
      * @param UserAccessBrowser $userAccessBrowser
      * @return void
      */
-    public static function sendErrorNotification(UserAccessBrowser $userAccessBrowser): void
+    public static function sendErrorNotification(?UserAccessBrowser $userAccessBrowser): void
     {
         // Check if error notifications are enabled
         if (!config('access-guard.notifications.is_errors_notifications_enabled')) {
+            return;
+        }
+
+        // Ensure UserAccessBrowser is provided
+        if (is_null($userAccessBrowser)) {
             return;
         }
 
@@ -75,5 +80,6 @@ class AccessGuardService
             }
         }
     }
+
 
 }

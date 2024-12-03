@@ -22,9 +22,12 @@ class VerifyAccess
         }
 
         $session = Session::driver(config('access-guard.session_driver'));
-        $pathAfterDomain = $session->start();
+        $session->start();
 
-        $pathAfterDomain = $session->get('url_intended', '/');
+        // Capture and store the current URL after the domain
+        $currentPath = $request->path(); // Get current URL path
+        $session->put('url_intended', $currentPath);
+
         // Redirect to the access verification form
         return redirect()->route('laravel-access-guard.form')->with('error', 'Access denied. Please verify.');
     }
